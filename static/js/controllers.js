@@ -9,46 +9,64 @@ angular.module('nmeter.controllers', []).
   		var highchartsOptions = Highcharts.setOptions(charttheme);
   		var colors = Highcharts.getOptions().colors;
 
-  		var seriesArray = []
-		
-		function updateChart(){
-			console.log(seriesArray)
+		$scope.$on('$viewContentLoaded', function() {
+			chart = new Highcharts.Chart({
+		        chart: {
+		            renderTo: 'latency',
+		            defaultSeriesType: 'spline',
+		            events: {
+		                load: requestData
+		            }
+		        },
+		        title: {
+		            text: 'Live random data'
+		        },
+		        xAxis: {
+		            type: 'datetime',
+		            tickPixelInterval: 150,
+		            maxZoom: 20 * 1000
+		        },
+		        yAxis: {
+		            minPadding: 0.2,
+		            maxPadding: 0.2,
+		            title: {
+		                text: 'Value',
+		                margin: 80
+		            }
+		        },
+		        series: [{
+		            name: 'HPS',
+		            data: []
+		        }]
+		    });     
 
-			chart = $('#latency').highcharts({
-				colors: ["#DDDF0D", "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee",
-			      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
-			    chart: {
-			    	type: 'spline'
-			    },
 
-			    rangeSelector: {
-			        selected: 1
-			    },
+			requestData()
+		})
 
-			    title: {
-			        text: 'Latency'
-			    },
+		function requestData() {
+			webapi.getHPS(function(data){
 
-                xAxis: {
-	                type: 'datetime',
-	                dateTimeLabelFormats: { // don't display the dummy year
-	                    month: '%e. %b',
-	                    year: '%b'
-	                }
-	            },
-	            yAxis: {
-	                title: {
-	                    text: 'ms'
-	                },
-	                min: 0
-	            },
-			    
-			    series: seriesArray
+				chart.series[0].setData(data, true);
+				setTimeout(requestData, 5000);
+
 			});
 		}
 
-	//$scope.$on('$viewContentLoaded', function() {
-		webapi.getLatency(function(data){
+		
+
+	//});
+
+
+  }])
+  .controller('MyCtrl2', [function() {
+
+  }]);
+
+
+
+  	//$scope.$on('$viewContentLoaded', function() {
+		/*webapi.getLatency(function(data){
 			seriesArray.push({
 		        name: 'LT',
 		        data: data
@@ -73,12 +91,4 @@ angular.module('nmeter.controllers', []).
 		    })
 
 		    updateChart()
-		});
-
-	//});
-
-
-  }])
-  .controller('MyCtrl2', [function() {
-
-  }]);
+		});*/
