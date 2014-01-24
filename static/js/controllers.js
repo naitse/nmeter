@@ -11,54 +11,22 @@ angular.module('nmeter.controllers', []).
   		var rtchart;
   		var hpschart;
 
-		// hpschart = new Highcharts.Chart({
-		//         chart: {
-		//             renderTo: 'hps',
-		//             events: {
-		//                 load: requestData
-		//             }
-		//         },
-		//         title: {
-		//             text: ''
-		//         },
-		//         xAxis: {
-		//             type: 'datetime'
-		//         },
-		//         yAxis: {
-		//             minPadding: 0.2,
-		//             maxPadding: 0.2,
-		//             title: {
-		//                 text: 'Value',
-		//                 margin: 80
-		//             }
-		//         },
-		//         series: [{
-		//             name: 'HPS',
-		//             data: []
-		//         }]
-		//     });     
+  		$scope.testConfig = {
 
-		// function requestData() {
-
-	 //    	var deferreds = new Array()
+  		}
 
 
-  //   		deferreds['hps'] = $q.defer();
-		// 	webapi.getHPS(function(data){
+		webapi.getConfig(function(data){
 
+			$.each(data, function(config){
+				config = (config == null)?'':config;
+			})
 
-		// 		hpschart.series[0].setData(data, true);
-		// 		deferreds['hps'].resolve(data);
+			$scope.testConfig  = data;
+		})
+		
 
-		// 	});
-			
-		    
-		//     $q.all(deferreds).then(function(val){
-		// 		setTimeout(requestData, 5000);
-		//     })
-		// }
-
-		var hpsData = []
+		$scope.hpsData = []
 
 		hpschart = new Highcharts.StockChart({
 			chart:{
@@ -76,11 +44,11 @@ angular.module('nmeter.controllers', []).
 			
 			series : [{
 		            name: 'Hits/s',
-		            data: hpsData
+		            data: $scope.hpsData
 		     }]
 		}); 
 
-		var rtData = []
+		$scope.rtData = []
 
 		rtchart = new Highcharts.StockChart({
 			chart:{
@@ -98,7 +66,7 @@ angular.module('nmeter.controllers', []).
 			
 			series : [{
 		            name: 'ms',
-		            data: rtData
+		            data: $scope.rtData
 		     }]
 		});  
 
@@ -111,7 +79,8 @@ angular.module('nmeter.controllers', []).
 
     		deferreds['RT'] = $q.defer();
 			webapi.getResponseTime(function(data){
-				rtchart.series[0].setData(data, true);
+				$scope.rtData = data
+				rtchart.series[0].setData($scope.rtData, true);
 				setTimeout(requestRTData(), 5000);
 			});
 		    
@@ -123,7 +92,8 @@ angular.module('nmeter.controllers', []).
 
     		deferreds['RT'] = $q.defer();
 			webapi.getHPS(function(data){
-				hpschart.series[0].setData(data, true);
+				$scope.hpsData = data
+				hpschart.series[0].setData($scope.hpsData, true);
 				setTimeout(requestHPSData(), 5000);
 			});
 		    

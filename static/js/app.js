@@ -9,7 +9,6 @@ var nMeter = angular.module('nmeter', [
   'nmeter.controllers'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/latency', {templateUrl: 'partials/latency.html', controller: 'LatencyCtrl'});
-  $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
-  $routeProvider.otherwise({redirectTo: '/latency'});
+  $routeProvider.when('/', {templateUrl: 'partials/latency.html', controller: 'LatencyCtrl'});
+  $routeProvider.otherwise({redirectTo: '/'});
 }]);

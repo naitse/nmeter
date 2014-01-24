@@ -30,49 +30,10 @@ function getSeconds(time)
     return Date.UTC((today.getUTCFullYear()), (today.getUTCMonth()), (today.getUTCDate()), ts[0], ts[1], ts[2], ts[3]);
 }
 
-app.get('/api/latency', function (req, res) {
-	var output = [];
-
-	var parser = new xml2js.Parser();
-
-	fs.readFile(__dirname + '/latency.xml', function(err, data) {
-    	parser.parseString(data, function (err, parsedObject) {
-
-    		_.each(parsedObject.testResults.httpSample, function(sample){
-    			sample = sample.$
-    			output.push([parseInt(sample.ts), parseInt(sample.t)])
-
-    		})
-
-       	 res.json(output);
-    	});
-	});
-
-});
-
-// app.get('/api/responseTime', function (req, res) {
-// 	var output = [];
-
-// 	var parser = new xml2js.Parser();
-
-// 	fs.readFile(__dirname + '/responsetime.xml', function(err, data) {
-//     	parser.parseString(data, function (err, parsedObject) {
-
-//     		_.each(parsedObject.testResults.httpSample, function(sample){
-//     			sample = sample.$
-//     			output.push([parseInt(sample.ts), parseInt(sample.t)])
-
-//     		})
-
-//        	 res.json(output);
-//     	});
-// 	});
-
-// });
 app.get('/api/responseTime', function (req, res) {
     var output = [];
 
-    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /temp/rt.csv --input-jtl /temp/results.jtl --plugin-type ResponseTimesOverTime"
+    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/rt.csv --input-jtl /home/ubuntu/results.jtl --plugin-type ResponseTimesOverTime"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
@@ -81,7 +42,7 @@ app.get('/api/responseTime', function (req, res) {
 
 
       //CSV File Path or CSV String or Readable Stream Object
-        var csvFileName="/temp/rt.csv";
+        var csvFileName="/home/ubuntu/rt.csv";
 
         //new converter instance
         var csvConverter=new Converter();
@@ -118,10 +79,37 @@ app.get('/api/responseTime', function (req, res) {
 
 });
 
+app.get('/api/read', function (req, res){
+
+    var parser = new xml2js.Parser();
+
+    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+     parser.parseString(data, function (err, parsedObject) {
+            var rOut = {
+                domain: parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].hashTree[0].HTTPSamplerProxy[0].stringProp[0]._,
+                nthreads:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[1]._),
+                ramptime:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[2]._),
+                duration:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[3]._),
+                delay:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[4]._)
+            }
+            res.json(rOut);
+            //res.json(parsedObject)
+         // _.each(parsedObject, function(sample){
+             // sample = sample.$
+             // output.push([parseInt(sample.ts), parseInt(sample.t)])
+
+         // })
+
+          //res.json(output);
+     });
+    });
+
+});
+
 app.get('/api/hps', function (req, res) {
 	var output = [];
 
-    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /temp/hps.csv --input-jtl /temp/results.jtl --plugin-type HitsPerSecond"
+    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/hps.csv --input-jtl /home/ubuntu/results.jtl --plugin-type HitsPerSecond"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
@@ -130,7 +118,7 @@ app.get('/api/hps', function (req, res) {
 
 
       //CSV File Path or CSV String or Readable Stream Object
-        var csvFileName="/temp/hps.csv";
+        var csvFileName="/home/ubuntu/hps.csv";
 
         //new converter instance
         var csvConverter=new Converter();
@@ -170,4 +158,4 @@ app.get('/api/hps', function (req, res) {
 });
 
 console.log('Express running at 9999')
-app.listen(8888)
+app.listen(80)

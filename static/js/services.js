@@ -12,6 +12,9 @@ nMeter.service('webapi', ['$http', function($http){
 	  		},
 	  		getHPS: function(callback){
 	  			return $http.get('api/hps').success(callback)
+	  		},
+	  		getConfig: function(callback){
+  				return $http.get('api/read').success(callback)
 	  		}
 		}
 }])
@@ -24,12 +27,12 @@ nMeter.service('charttheme',function(){
 			      backgroundColor: {
 			         linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			         stops: [
-			            [0, 'rgb(96, 96, 96)'],
-			            [1, 'rgb(16, 16, 16)']
+			            [0, 'rgb(16, 16, 16)'],
+			            [1, 'rgb(26, 26, 26)']
 			         ]
 			      },
 			      borderWidth: 0,
-			      borderRadius: 15,
+			      borderRadius: 9,
 			      plotBackgroundColor: null,
 			      plotShadow: false,
 			      plotBorderWidth: 0
