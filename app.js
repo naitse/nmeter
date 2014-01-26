@@ -109,7 +109,7 @@ app.get('/api/read', function (req, res){
 app.get('/api/hps', function (req, res) {
 	var output = [];
 
-    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/hps.csv --input-jtl /home/ubuntu/results.jtl --plugin-type HitsPerSecond"
+    command = "cd /home/ubuntu/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/hps.csv --input-jtl /home/ubuntu/results.jtl --plugin-type HitsPerSecond"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
