@@ -33,7 +33,7 @@ function getSeconds(time)
 app.get('/api/responseTime', function (req, res) {
     var output = [];
 
-    command = "cd /Applications/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/rt.csv --input-jtl /home/ubuntu/results.jtl --plugin-type ResponseTimesOverTime"
+    command = "cd /home/ubuntu/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/rt.csv --input-jtl /home/ubuntu/results.jtl --plugin-type ResponseTimesOverTime"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
