@@ -143,5 +143,21 @@ app.get('/api/run', function (req, res) {
 
 });
 
+app.get('/api/terminate', function (req, res) {
+    var output = [];
+
+    command = "sudo pkill -KILL jmeter"
+    exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
+      if (error !== null) {
+          console.log('exec error: ' + error);
+          res.end({error: error});
+      }
+
+      res.json({state:'stop'})
+
+    });
+
+});
+
 console.log('Express running at 9999')
 app.listen(80)
