@@ -146,7 +146,7 @@ app.get('/api/run', function (req, res) {
 app.get('/api/terminate', function (req, res) {
     var output = [];
 
-    command = "sudo pkill -KILL jmeter"
+    command = "sudo pkill -KILL java | grep jmeter"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);

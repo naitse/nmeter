@@ -18,9 +18,8 @@ angular.module('nmeter.controllers', []).
   			if($scope.runEnabled == false){
   				return false;
   			}
-
+			$scope.runEnabled = false;
   			webapi.runJob(function(){
-				$scope.runEnabled = false;
   			})
   		}
 
@@ -30,8 +29,8 @@ angular.module('nmeter.controllers', []).
   				return false;
   			}
 
+			$scope.runEnabled = true;
   			webapi.stopJob(function(){
-				$scope.runEnabled = true;
   			})
   		}
 
