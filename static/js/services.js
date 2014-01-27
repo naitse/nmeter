@@ -7,10 +7,10 @@ nMeter.service('webapi', ['$http', function($http){
 			getLatency: function(callback){
 	  			return $http.get('api/latency').success(callback)
 	  		},
-	  		getResponseTime: function(callback){
+	  		getResponseTime: function(callback, error){
 	  			return $http.get('api/responseTime').success(callback).fail(error)
 	  		},
-	  		getHPS: function(callback){
+	  		getHPS: function(callback, error){
 	  			return $http.get('api/hps').success(callback).fail(error)
 	  		},
 	  		getConfig: function(callback){
