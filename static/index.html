@@ -203,7 +203,7 @@ cursor: pointer;
         <li><label class="input-label">Method </label><input type="text" class="test-input" ng-model="testConfig.method"></li>
         <li><label class="input-label">Path </label><input type="text" class="test-input" ng-model="testConfig.path"></li>
         <li><label class="input-label">Content Type </label><input type="text" class="test-input" ng-model="testConfig.contentEncoding"></li>
-        <li ng-show="testConfig.arguments.type == 'post'"><label class="input-label">Request Body </label><textarea type="text" class="test-input" ng-model="testConfig.arguments.data"></li>
+        <li ng-show="testConfig.arguments.type == 'post'"><label class="input-label">Request Body </label><textarea type="text" class="test-input" ng-model="testConfig.arguments.data"></textarea></li>
       </ul>
       <div class="btn_run action-button" ng-class="(runEnabled == false)?'disabled':''" ng-click="runJob()">Run</div>
       <div class="btn_stop action-button" ng-class="(runEnabled == true)?'disabled':''" ng-click="stopJob()">Stop</div>
