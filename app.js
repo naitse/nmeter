@@ -134,10 +134,10 @@ app.get('/api/run', function (req, res) {
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
-          res.end();
+          res.end({error: error});
       }
 
-      res.json(true)
+      res.json({state:'running'})
 
     });
 
