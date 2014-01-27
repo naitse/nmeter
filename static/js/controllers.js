@@ -105,6 +105,10 @@ angular.module('nmeter.controllers', []).
 				$scope.rtData = data
 				rtchart.series[0].setData($scope.rtData, true);
 				setTimeout(requestRTData(), 5000);
+			},function(data){
+				$scope.rtData = data
+				rtchart.series[0].setData($scope.rtData, true);
+				setTimeout(requestRTData(), 5000);
 			});
 		    
 		}
@@ -115,6 +119,10 @@ angular.module('nmeter.controllers', []).
 
     		deferreds['RT'] = $q.defer();
 			webapi.getHPS(function(data){
+				$scope.hpsData = data
+				hpschart.series[0].setData($scope.hpsData, true);
+				setTimeout(requestHPSData(), 5000);
+			},function(data){
 				$scope.hpsData = data
 				hpschart.series[0].setData($scope.hpsData, true);
 				setTimeout(requestHPSData(), 5000);
