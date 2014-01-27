@@ -194,11 +194,15 @@ cursor: pointer;
     <div class="graph" id="restime" style=" width: 600px; height: 300px; "></div>
     <div class="test-panel">
       <ul style=" list-style-type: none; ">
-        <li><label class="input-label">Domain </label><input type="text" class="test-input" ng-model="testConfig.domain"></li>
         <li><label class="input-label">Threads </label><input type="text" class="test-input" ng-model="testConfig.nthreads"></li>
         <li><label class="input-label">Ramp Up Time </label><input type="text" class="test-input" ng-model="testConfig.ramptime"></li>
         <li><label class="input-label">Ramp Up Delay </label><input type="text" class="test-input" ng-model="testConfig.delay"></li>
         <li><label class="input-label">Duration </label><input type="text" class="test-input" ng-model="testConfig.duration"></li>
+
+        <li><label class="input-label">Domain </label><input type="text" class="test-input" ng-model="testConfig.domain"></li>
+        <li><label class="input-label">Method </label><input type="text" class="test-input" ng-model="testConfig.method"></li>
+        <li><label class="input-label">Path </label><input type="text" class="test-input" ng-model="testConfig.path"></li>
+        <li><label class="input-label">Content Type </label><input type="text" class="test-input" ng-model="testConfig.contentEncoding"></li>
       </ul>
       <div class="btn_run action-button" ng-class="(runEnabled == false)?'disabled':''" ng-click="runJob()">Run</div>
       <div class="btn_stop action-button" ng-class="(runEnabled == true)?'disabled':''" ng-click="stopJob()">Stop</div>

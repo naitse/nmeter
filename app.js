@@ -8,7 +8,8 @@
     var sys = require('sys')
     var exec = require('child_process').exec;
     var Converter=require("csvtojson").core.Converter;
-
+    var xpath = require('xpath')
+      , dom = require('xmldom').DOMParser
 
 
 
@@ -100,7 +101,7 @@ app.get('/api/responseTime', function (req, res) {
 
 });
 
-app.get('/api/read', function (req, res){
+app.get('/api/readDep', function (req, res){
 
     var parser = new xml2js.Parser();
 
@@ -123,6 +124,37 @@ app.get('/api/read', function (req, res){
 
           //res.json(output);
      });
+    });
+
+});
+
+app.get('/api/read', function (req, res){
+
+    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+
+    data = data.toString();
+
+    var doc = new dom().parseFromString(data)
+    var domain = xpath.select("//stringProp[@name='HTTPSampler.domain']/text()", doc).toString()
+    var nthreads = xpath.select("//stringProp[@name='ThreadGroup.num_threads']/text()", doc).toString()
+    var ramptime = xpath.select("//stringProp[@name='ThreadGroup.ramp_time']/text()", doc).toString()
+    var duration = xpath.select("//stringProp[@name='ThreadGroup.duration']/text()", doc).toString()
+    var delay = xpath.select("//stringProp[@name='ThreadGroup.delay']/text()", doc).toString()
+    var method = xpath.select("//stringProp[@name='HTTPSampler.method']/text()", doc).toString()
+    var _path = xpath.select("//stringProp[@name='HTTPSampler.path']/text()", doc).toString()
+    var contentEncoding = xpath.select("//stringProp[@name='HTTPSampler.contentEncoding']/text()", doc).toString()
+
+            var rOut = {
+                domain: domain,
+                nthreads:parseInt(nthreads),
+                ramptime:parseInt(ramptime),
+                duration:parseInt(duration),
+                delay:parseInt(delay),
+                method:method,
+                path:_path,
+                contentEncoding:contentEncoding
+            }
+            res.json(rOut)
     });
 
 });
