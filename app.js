@@ -130,7 +130,7 @@ app.get('/api/read', function (req, res){
 app.get('/api/run', function (req, res) {
     var output = [];
 
-    command = "sudo cat /dev/null > /home/ubuntu/results.jtl && sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl"
+    command = "sudo cat /dev/null > /home/ubuntu/results.jtl && sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
