@@ -104,8 +104,8 @@ angular.module('nmeter.controllers', []).
 		     }]
 		});  
 
-		// requestRTData()
-		// requestHPSData()
+		requestRTData()
+		requestHPSData()
 
 		function requestRTData() {
 
