@@ -5,11 +5,35 @@
 angular.module('nmeter.controllers', []).
   controller('LatencyCtrl', ['$scope', 'webapi', 'charttheme', '$q', function($scope, webapi, charttheme, $q) {
 
+  		$scope.runEnabled = true;
+
   		var highchartsOptions = Highcharts.setOptions(charttheme);
   		var colors = Highcharts.getOptions().colors;
 
   		var rtchart;
   		var hpschart;
+
+  		$scope.runJob = function(){
+
+  			if($scope.runEnabled == false){
+  				return false;
+  			}
+
+  			webapi.runJob(function(){
+				$scope.runEnabled = false;
+  			})
+  		}
+
+  		$scope.stopJob = function(){
+
+  			if($scope.runEnabled == true){
+  				return false;
+  			}
+
+  			webapi.stopJob(function(){
+				$scope.runEnabled = true;
+  			})
+  		}
 
   		$scope.testConfig = {
 

@@ -176,6 +176,11 @@ line-height: 2;
 
 .action-button {
 display: inline-block;
+cursor: pointer;
+}
+
+.disabled {
+  opacity:0.5;
 }
 
 
@@ -195,8 +200,8 @@ display: inline-block;
         <li><label class="input-label">Ramp Up Delay </label><input type="text" class="test-input" ng-model="testConfig.delay"></li>
         <li><label class="input-label">Duration </label><input type="text" class="test-input" ng-model="testConfig.duration"></li>
       </ul>
-      <div class="btn_run action-button">Run</div>
-      <div class="btn_stop action-button">Stop</div>
+      <div class="btn_run action-button" ng-class="(runEnabled == false)?'disabled':''">Run</div>
+      <div class="btn_stop action-button" ng-class="(runEnabled == true)?'disabled':''">Stop</div>
     </div>
   </div>
  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
