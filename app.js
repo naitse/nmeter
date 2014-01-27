@@ -131,30 +131,50 @@ app.get('/api/readDep', function (req, res){
 app.get('/api/read', function (req, res){
 
     fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+    //fs.readFile('/temp/stress.jmx', function(err, data) {
 
-    data = data.toString();
+        data = data.toString();
 
-    var doc = new dom().parseFromString(data)
-    var domain = xpath.select("//stringProp[@name='HTTPSampler.domain']/text()", doc).toString()
-    var nthreads = xpath.select("//stringProp[@name='ThreadGroup.num_threads']/text()", doc).toString()
-    var ramptime = xpath.select("//stringProp[@name='ThreadGroup.ramp_time']/text()", doc).toString()
-    var duration = xpath.select("//stringProp[@name='ThreadGroup.duration']/text()", doc).toString()
-    var delay = xpath.select("//stringProp[@name='ThreadGroup.delay']/text()", doc).toString()
-    var method = xpath.select("//stringProp[@name='HTTPSampler.method']/text()", doc).toString()
-    var _path = xpath.select("//stringProp[@name='HTTPSampler.path']/text()", doc).toString()
-    var contentEncoding = xpath.select("//stringProp[@name='HTTPSampler.contentEncoding']/text()", doc).toString()
+        var doc = new dom().parseFromString(data)
+        var domain = xpath.select("//stringProp[@name='HTTPSampler.domain']/text()", doc).toString()
+        var nthreads = xpath.select("//stringProp[@name='ThreadGroup.num_threads']/text()", doc).toString()
+        var ramptime = xpath.select("//stringProp[@name='ThreadGroup.ramp_time']/text()", doc).toString()
+        var duration = xpath.select("//stringProp[@name='ThreadGroup.duration']/text()", doc).toString()
+        var delay = xpath.select("//stringProp[@name='ThreadGroup.delay']/text()", doc).toString()
+        var method = xpath.select("//stringProp[@name='HTTPSampler.method']/text()", doc).toString()
+        var _path = xpath.select("//stringProp[@name='HTTPSampler.path']/text()", doc).toString()
+        var contentEncoding = xpath.select("//stringProp[@name='HTTPSampler.contentEncoding']/text()", doc).toString()
 
-            var rOut = {
-                domain: domain,
-                nthreads:parseInt(nthreads),
-                ramptime:parseInt(ramptime),
-                duration:parseInt(duration),
-                delay:parseInt(delay),
-                method:method,
-                path:_path,
-                contentEncoding:contentEncoding
-            }
-            res.json(rOut)
+        var postBody = Boolean(xpath.select("//boolProp[@name='HTTPSampler.postBodyRaw']/text()", doc).toString())
+
+        var arguments = {type:'',data:[]}
+
+        if(typeof postBody != 'undefined' && postBody == true){
+            arguments.type = 'post'
+            arguments.data = xpath.select("//elementProp[@name='HTTPsampler.Arguments']/collectionProp/elementProp/stringProp[@name='Argument.value']/text()", doc).toString()
+        }else{
+            arguments.type = 'query'
+            var argum = xpath.select("//elementProp[@name='HTTPsampler.Arguments']/collectionProp/elementProp", doc)
+            for (var i = argum.length - 1; i >= 0; i--) {
+                var argName = xpath.select("stringProp[@name='Argument.name']/text()", argum[i]).toString()
+                var argValue = xpath.select("stringProp[@name='Argument.value']/text()", argum[i]).toString()
+                arguments.data.push({key:argName,value:argValue})
+            };
+        }
+
+        var rOut = {
+            domain: domain,
+            nthreads:parseInt(nthreads),
+            ramptime:parseInt(ramptime),
+            duration:parseInt(duration),
+            delay:parseInt(delay),
+            method:method,
+            path:_path,
+            contentEncoding:contentEncoding,
+            arguments:arguments
+        }
+
+        res.json(rOut)
     });
 
 });
