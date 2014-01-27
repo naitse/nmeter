@@ -130,8 +130,8 @@ app.get('/api/readDep', function (req, res){
 
 app.get('/api/read', function (req, res){
 
-    //fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
-    fs.readFile('/temp/stress.jmx', function(err, data) {
+    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+    //fs.readFile('/temp/stress.jmx', function(err, data) {
 
         data = data.toString();
 
