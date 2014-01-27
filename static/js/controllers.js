@@ -6,6 +6,8 @@ angular.module('nmeter.controllers', []).
   controller('LatencyCtrl', ['$scope', 'webapi', 'charttheme', '$q', function($scope, webapi, charttheme, $q) {
 
   		$scope.runEnabled = true;
+  		$scope.nochange = true;
+  		$scope.testConfig = {};
 
   		var highchartsOptions = Highcharts.setOptions(charttheme);
   		var colors = Highcharts.getOptions().colors;
@@ -34,9 +36,18 @@ angular.module('nmeter.controllers', []).
   			})
   		}
 
-  		$scope.testConfig = {
+  		$scope.saveConfig = function(){
 
+  			$.each($scope.testConfig,function(el){
+  				console.log(el)
+  				if($scope.testConfig[el] == null){$scope.testConfig[el] = ''}
+  			})
+  			webapi.setConfig($scope.testConfig, function(resp){
+  				$scope.nochange = true;
+  			})
   		}
+
+  		
 
 
 		webapi.getConfig(function(data){
@@ -93,8 +104,8 @@ angular.module('nmeter.controllers', []).
 		     }]
 		});  
 
-		requestRTData()
-		requestHPSData()
+		// requestRTData()
+		// requestHPSData()
 
 		function requestRTData() {
 

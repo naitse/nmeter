@@ -16,6 +16,9 @@ nMeter.service('webapi', ['$http', function($http){
 	  		getConfig: function(callback){
   				return $http.get('api/read').success(callback)
 	  		},
+	  		setConfig: function(data, callback){
+  				return $http.post('api/save', data).success(callback)
+	  		},
 	  		runJob: function(callback){
   				return $http.get('api/run').success(callback)
 	  		},
