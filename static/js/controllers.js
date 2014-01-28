@@ -115,11 +115,11 @@ angular.module('nmeter.controllers', []).
 			webapi.getResponseTime(function(data){
 				$scope.rtData = data
 				rtchart.series[0].setData($scope.rtData, true);
-				setTimeout(requestRTData(), 5000);
+				setTimeout(requestRTData(), 7000);
 			},function(data){
 				$scope.rtData = data
 				rtchart.series[0].setData($scope.rtData, true);
-				setTimeout(requestRTData(), 5000);
+				setTimeout(requestRTData(), 7000);
 			});
 		    
 		}
