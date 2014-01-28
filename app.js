@@ -282,11 +282,11 @@ app.get('/api/run', function (req, res) {
                   res.json({error: error});
               }
 
-              res.json({state:'running'})
 
             });
 
     });
+              res.json({state:'running'})
 
 });
 
@@ -300,9 +300,9 @@ app.get('/api/terminate', function (req, res) {
           res.end({error: error});
       }
 
-      res.json({state:'stop'})
 
     });
+      res.json({state:'stop'})
 
 });
 

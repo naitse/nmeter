@@ -115,11 +115,11 @@ angular.module('nmeter.controllers', []).
 			webapi.getResponseTime(function(data){
 				$scope.rtData = data
 				rtchart.series[0].setData($scope.rtData, true);
-				setTimeout(requestRTData(), 7000);
+				setTimeout(requestRTData(), 10000);
 			},function(data){
 				$scope.rtData = data
 				rtchart.series[0].setData($scope.rtData, true);
-				setTimeout(requestRTData(), 7000);
+				setTimeout(requestRTData(), 10000);
 			});
 		    
 		}
@@ -132,11 +132,11 @@ angular.module('nmeter.controllers', []).
 			webapi.getHPS(function(data){
 				$scope.hpsData = data
 				hpschart.series[0].setData($scope.hpsData, true);
-				setTimeout(requestHPSData(), 5000);
+				setTimeout(requestHPSData(), 10000);
 			},function(data){
 				$scope.hpsData = data
 				hpschart.series[0].setData($scope.hpsData, true);
-				setTimeout(requestHPSData(), 5000);
+				setTimeout(requestHPSData(), 10000);
 			});
 		    
 		}
