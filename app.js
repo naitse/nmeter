@@ -267,16 +267,24 @@ app.post('/api/save', function (req, res){
 });
 
 app.get('/api/run', function (req, res) {
-    var output = [];
 
-    command = "sudo cat /dev/null > /home/ubuntu/results.jtl && sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl"
+    command = "sudo cat /dev/null > /home/ubuntu/results.jtl"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
-          res.end({error: error});
+          res.json({error: error});
       }
 
-      res.json({state:'running'})
+          com = "sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl"
+            exec(com, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
+              if (error !== null) {
+                  console.log('exec error: ' + error);
+                  res.json({error: error});
+              }
+
+              res.json({state:'running'})
+
+            });
 
     });
 
