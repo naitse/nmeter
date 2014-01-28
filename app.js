@@ -275,7 +275,7 @@ app.get('/api/run', function (req, res) {
           res.json({error: error});
       }
 
-          com = "sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl"
+          com = "sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl &"
             exec(com, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
               if (error !== null) {
                   console.log('exec error: ' + error);
