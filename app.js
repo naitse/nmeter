@@ -59,8 +59,10 @@ app.get('/api/hps', function (req, res) {
         csvConverter.on("end_parsed",function(jsonObj){
 
             _.each(jsonObj.csvRows, function(row){
-                output.push([new Date(getSeconds(row['Elapsed time'])).getTime(), parseInt(row['Server Hits per Second'])]);
-                total += parseInt(row['Server Hits per Second']);
+                var hits = Math.floor(row['Server Hits per Second'])
+                var time = new Date(getSeconds(row['Elapsed time'])).getTime()
+                output.push([time, hits]);
+                total += hits;
             })
 
 
