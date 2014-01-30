@@ -73,6 +73,29 @@ app.get('/api/hps', function (req, res) {
         csvConverter.from(csvFileName);
 
 
+
+        var jtlFileName= location+"/results.jtl";
+
+        //new converter instance
+        var jtlConverter=new Converter();
+
+        //end_parsed will be emitted once parsing finished
+        jtlConverter.on("end_parsed",function(jsonObj){
+
+            _.each(jsonObj.csvRows, function(row){
+                if(typeof row['200'] == 'undefined'){
+                    console.log(row);
+                }
+            })
+
+
+            res.json({data:output,total:total});
+
+        });
+
+        jtlConverter.from(jtlFileName);
+
+
     });
 
 });

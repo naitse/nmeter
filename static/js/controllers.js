@@ -108,7 +108,7 @@ angular.module('nmeter.controllers', []).
 
 		requestRTData()
 		requestHPSData()
-		requestHPSSuccess()
+		// requestHPSSuccess()
 
 		function requestRTData() {
 
