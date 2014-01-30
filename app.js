@@ -9,8 +9,14 @@
     var exec = require('child_process').exec;
     var Converter=require("csvtojson").core.Converter;
     var xpath = require('xpath')
-      , dom = require('xmldom').DOMParser
+      , dom = require('xmldom').DOMParser;
 
+    argv = require('optimist').argv;
+
+    var local = argv['local'] ? Boolean(argv['local']) : false;
+
+var location = (local == true)?'/temp':'/home/ubuntu';
+var jmeterhome = (local == true)?'/Applications':'/home/ubuntu';
 
 
 var app = express();
@@ -33,8 +39,9 @@ function getSeconds(time)
 
 app.get('/api/hps', function (req, res) {
     var output = [];
+    var total = 0;
 
-    command = "cd /home/ubuntu/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/hps.csv --input-jtl /home/ubuntu/results.jtl --plugin-type HitsPerSecond"
+    command = "cd "+jmeterhome+"/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv "+location+"/hps.csv --input-jtl "+location+"/results.jtl --plugin-type HitsPerSecond"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
@@ -43,7 +50,7 @@ app.get('/api/hps', function (req, res) {
 
 
       //CSV File Path or CSV String or Readable Stream Object
-        var csvFileName="/home/ubuntu/hps.csv";
+        var csvFileName= location+"/hps.csv";
 
         //new converter instance
         var csvConverter=new Converter();
@@ -52,11 +59,12 @@ app.get('/api/hps', function (req, res) {
         csvConverter.on("end_parsed",function(jsonObj){
 
             _.each(jsonObj.csvRows, function(row){
-                output.push([new Date(getSeconds(row['Elapsed time'])).getTime(), parseInt(row['Server Hits per Second'])])
+                output.push([new Date(getSeconds(row['Elapsed time'])).getTime(), parseInt(row['Server Hits per Second'])]);
+                total += parseInt(row['Server Hits per Second']);
             })
 
 
-            res.json(output);
+            res.json({data:output,total:total});
 
         });
 
@@ -70,7 +78,7 @@ app.get('/api/hps', function (req, res) {
 app.get('/api/responseTime', function (req, res) {
     var output = [];
 
-    command = "cd /home/ubuntu/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv /home/ubuntu/rt.csv --input-jtl /home/ubuntu/results.jtl --plugin-type ResponseTimesOverTime"
+    command = "cd "+jmeterhome+"/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv "+location+"/rt.csv --input-jtl "+location+"/results.jtl --plugin-type ResponseTimesOverTime"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
@@ -79,7 +87,7 @@ app.get('/api/responseTime', function (req, res) {
 
 
       //CSV File Path or CSV String or Readable Stream Object
-        var csvFileName="/home/ubuntu/rt.csv";
+        var csvFileName= location+"/rt.csv";
 
         //new converter instance
         var csvConverter=new Converter();
@@ -101,36 +109,45 @@ app.get('/api/responseTime', function (req, res) {
 
 });
 
-app.get('/api/readDep', function (req, res){
+app.get('/api/rcs', function (req, res) {
+    var output = 0;
 
-    var parser = new xml2js.Parser();
+    command = "cd "+jmeterhome+"/apache-jmeter-2.10/lib/ext/ && java -jar CMDRunner.jar --tool Reporter --generate-csv "+location+"/rcs.csv --input-jtl "+location+"/results.jtl --plugin-type ResponseCodesPerSecond"
+    exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
+      if (error !== null) {
+          console.log('exec error: ' + error);
+          res.end();
+      }
 
-    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
-     parser.parseString(data, function (err, parsedObject) {
-            var rOut = {
-                domain: parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].hashTree[0].HTTPSamplerProxy[0].stringProp[0]._,
-                nthreads:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[1]._),
-                ramptime:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[2]._),
-                duration:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[3]._),
-                delay:parseInt(parsedObject.jmeterTestPlan.hashTree[0].hashTree[0].ThreadGroup[0].stringProp[4]._)
-            }
-            res.json(rOut);
-            //res.json(parsedObject)
-         // _.each(parsedObject, function(sample){
-             // sample = sample.$
-             // output.push([parseInt(sample.ts), parseInt(sample.t)])
 
-         // })
+      //CSV File Path or CSV String or Readable Stream Object
+        var csvFileName= location+"/rcs.csv";
 
-          //res.json(output);
-     });
+        //new converter instance
+        var csvConverter=new Converter();
+
+        //end_parsed will be emitted once parsing finished
+        csvConverter.on("end_parsed",function(jsonObj){
+
+            _.each(jsonObj.csvRows, function(row){
+                output += parseInt(row['200'])
+            })
+
+
+            res.json({success:output});
+
+        });
+
+        csvConverter.from(csvFileName);
+
+
     });
 
 });
 
 app.get('/api/read', function (req, res){
-
-    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+    console.log(location+'/stress.jmx')
+    fs.readFile(location+'/stress.jmx', function(err, data) {
     //fs.readFile('/temp/stress.jmx', function(err, data) {
 
         data = data.toString();
@@ -181,7 +198,7 @@ app.get('/api/read', function (req, res){
 
 app.post('/api/save', function (req, res){
 
-    fs.readFile('/home/ubuntu/stress.jmx', function(err, data) {
+    fs.readFile(location+'/stress.jmx', function(err, data) {
     //fs.readFile('/temp/stress.jmx', function(err, data) {
 
         data = data.toString();
@@ -214,9 +231,9 @@ app.post('/api/save', function (req, res){
         //     });
         // });
 
-        fs.writeFile('/home/ubuntu/stress.jmx', '', function (err) {
+        fs.writeFile(location+'/stress.jmx', '', function (err) {
           if (err) throw err;
-            fs.writeFile('/home/ubuntu/stress.jmx', data, function (err) {
+            fs.writeFile(location+'/stress.jmx', data, function (err) {
                 if (err) throw err;
             });
         });
@@ -268,14 +285,14 @@ app.post('/api/save', function (req, res){
 
 app.get('/api/run', function (req, res) {
 
-    command = "sudo cat /dev/null > /home/ubuntu/results.jtl"
+    command = "sudo cat /dev/null > "+location+"/results.jtl"
     exec(command, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
       if (error !== null) {
           console.log('exec error: ' + error);
           res.json({error: error});
       }
 
-          com = "sudo /home/ubuntu/apache-jmeter-2.10/bin/./jmeter.sh -n -t /home/ubuntu/stress.jmx -l /home/ubuntu/results.jtl &"
+          com = "sudo "+jmeterhome+"/apache-jmeter-2.10/bin/./jmeter.sh -n -t "+location+"/stress.jmx -l "+location+"/results.jtl &"
             exec(com, {maxBuffer: 5024*1024}, function(error, stdout, stderr){
               if (error !== null) {
                   console.log('exec error: ' + error);

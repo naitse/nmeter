@@ -13,6 +13,9 @@ nMeter.service('webapi', ['$http', function($http){
 	  		getHPS: function(callback, error){
 	  			return $http.get('api/hps').success(callback).error(error)
 	  		},
+	  		getSuccessTotal: function(callback, error){
+	  			return $http.get('api/rcs').success(callback).error(error)
+	  		},
 	  		getConfig: function(callback){
   				return $http.get('api/read').success(callback)
 	  		},

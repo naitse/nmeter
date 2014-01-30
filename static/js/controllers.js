@@ -8,6 +8,8 @@ angular.module('nmeter.controllers', []).
   		$scope.runEnabled = true;
   		$scope.nochange = true;
   		$scope.testConfig = {};
+  		$scope.hpscount = 0;
+  		$scope.hpserrorcount = 0;
 
   		var highchartsOptions = Highcharts.setOptions(charttheme);
   		var colors = Highcharts.getOptions().colors;
@@ -106,6 +108,7 @@ angular.module('nmeter.controllers', []).
 
 		requestRTData()
 		requestHPSData()
+		requestHPSSuccess()
 
 		function requestRTData() {
 
@@ -130,21 +133,54 @@ angular.module('nmeter.controllers', []).
 
     		deferreds['RT'] = $q.defer();
 			webapi.getHPS(function(data){
-				$scope.hpsData = data
+				$scope.hpsData = data.data
+				$scope.hpscount = data.total;
 				hpschart.series[0].setData($scope.hpsData, true);
 				setTimeout(requestHPSData(), 10000);
 			},function(data){
-				$scope.hpsData = data
+				$scope.hpsData = data.data
+				$scope.hpscount = data.total;
 				hpschart.series[0].setData($scope.hpsData, true);
 				setTimeout(requestHPSData(), 10000);
 			});
 		    
 		}
 
+		function requestHPSSuccess() {
 
+	    	var deferreds = new Array()
 
+    		deferreds['RT'] = $q.defer();
+			webapi.getSuccessTotal(function(data){
+				$scope.hpserrorcount = $scope.hpscount - data.success;
+				setTimeout(requestHPSSuccess(), 10000);
+			},function(data){
+				$scope.hpscount = data.total;
+				$scope.hpserrorcount = $scope.hpscount - data.success;
+				setTimeout(requestHPSSuccess(), 10000);
+			});
+		    
+		}
 
-		
+		$scope.userMessage = function(){
+
+			var out = 'Loading...'
+
+			if($scope.hpscount > 0 && $scope.hpserrorcount == 0){
+				out = 'Looking good so far!'
+			}
+
+			if($scope.hpserrorcount > 0 && $scope.hpscount > $scope.hpserrorcount){
+				out = 'Mmm, there are some errors'
+			}
+
+			if($scope.hpserrorcount > 0 && $scope.hpscount == $scope.hpserrorcount){
+				out = 'OMG!!!! STAAAPP'
+			}
+
+			return out;
+			
+		}
 
 	//});
 
